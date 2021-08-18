@@ -15,9 +15,8 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
-  let divRef = useRef<HTMLDivElement>(null);
+  const [showAlert, setShowAlert] = useState(false);
   
-
   function validateForm() {
     return username.length > 0 && password.length > 0;
   }
@@ -30,18 +29,15 @@ const Login = () => {
       console.log('resp', resp)
       if (resp.hasOwnProperty('token')) {
         localStorage.setItem('token', `Bearer ${resp.token}`)
+        history.push('/')
       }
       const user = await UserClient.getUser();
       console.log('UserClient.getUser', user);
       if (user.hasOwnProperty('user_type')) {
         localStorage.setItem('userType', user.user_type);
       } else {
-        console.log("Didn't receive a user type on authentication")
-      }
-      if(resp.status == 200){
-        history.push('/')
-      } else {
-        divRef.hidden = 'false'
+        console.log("Didn't receive a user type on authentication");
+        setShowAlert(true);
       }
       
     } catch (err) {
@@ -79,7 +75,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </InputGroup>
-        <div class="alert alert-danger" role="alert" hidden='true' ref={node=> divRef = node}>
+        <div className={showAlert ? "show-alert-class alert alert-danger" : "hide-alert-class"} role="alert">
           Invalid username or password!
         </div>
         <button type="submit" class="btn btn-outline-secondary">Sign In</button>

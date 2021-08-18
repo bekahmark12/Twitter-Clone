@@ -1,7 +1,7 @@
 import "./topbar.css";
 import React from 'react';
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
-import { BrowserRouter as Router, Link, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, NavLink, Link, Redirect, Switch } from "react-router-dom";
 
 export default function Topbar() {
   return (
@@ -20,13 +20,12 @@ export default function Topbar() {
         </div>
       </div>
       <div className="topbarRight">
-      <Router>
+
         <div className="topbarLinks">
-       
-          <NavLink to='/login' className='topbarLink'>Login</NavLink>
-          <NavLink to='/home'className='topbarLink'>Home</NavLink>
+          <a href='/login' className='topbarLink'>Login</a>
+          <a href='/home' className='topbarLink'>Home</a>
         </div>
-        </Router>
+
         <div className="topbarIcons">
           <div className="topbarIconItem">
             <Person />

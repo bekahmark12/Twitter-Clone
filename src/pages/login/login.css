@@ -13,3 +13,11 @@
     width: 40%;
     padding: 20px;
 }
+
+.show-alert-class{
+    display: block;
+}
+
+.hide-alert-class{
+    display: none;
+}
