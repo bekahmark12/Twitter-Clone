@@ -1,15 +1,44 @@
 import "./topbar.css";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
-import { BrowserRouter as Router, NavLink, Link, Redirect, Switch } from "react-router-dom";
+import axios from "axios";
+
 
 export default function Topbar() {
-  // const setHomeRoute = () => {
-  //   if(localStorage.getItem('loggedIn')) {
-  //     return '/home'
-  //   }
-  //   return '/login'
-  // }
+  const [user, setUser] = useState(null);
+  let token = localStorage.getItem('token');
+
+  const getUser = async () => {
+    try {
+      const user = await axios.get(
+        "http://localhost:8080/api/users/",
+        { headers: { "Authorization": token }})
+        .then(response => {
+          console.log(response.data)
+          setUser(response.data)
+        }).catch(err => {
+          console.log(err.data)
+        });
+    } catch (err) {
+      if (err.response) {
+        return err.response.data;
+      }
+      console.log(err.response)
+      return { error: "Unexpected Error getting logged in user"};
+    }
+  }
+
+  useEffect(() => {
+    let mounted = true;
+    if (mounted) {
+        getUser();
+    }
+    return () => mounted = false;
+  }, [])
+  
+  if(!user){
+    return <h1>Loading User...</h1>
+  }
 
   return (
    
@@ -48,7 +77,7 @@ export default function Topbar() {
             <span className="topbarIconBadge">1</span>
           </div>
         </div>
-        <img src="/assets/person/1.jpeg" alt="" className="topbarImg"/>
+        <img src={user.profile_uri} alt="" className="topbarImg"/>
       </div>
     </div>
     

@@ -1,4 +1,5 @@
-import Post from "../post/Post";
+import PostImage from "../post/PostWithImage";
+import PostNoImage from "../post/PostNoImage";
 import Share from "../share/Share";
 import "./feed.css";
 import React, { useEffect, useState } from "react";
@@ -50,7 +51,8 @@ const getAllPosts = async () => {
       <div className="feedWrapper">
         <Share />
         {posts.map((p) => (
-          <Post key={p.id} post={p} />
+          p.image_uri != null ? 
+          <PostImage key={p.id} post={p} /> : <PostNoImage key={p.id} post={p}/>
         ))}
       </div>
     </div>

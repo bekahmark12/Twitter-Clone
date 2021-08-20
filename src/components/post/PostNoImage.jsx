@@ -3,7 +3,7 @@ import { MoreVert } from "@material-ui/icons";
 import { Users } from "../../dummyData";
 import { useState } from "react";
 
-export default function Post({ post }) {
+export default function PostNoImage({ post }) {
   const [like,setLike] = useState(post.like)
   const [isLiked,setIsLiked] = useState(false)
 
@@ -32,7 +32,6 @@ export default function Post({ post }) {
         </div>
         <div className="postCenter">
           <span className="postText">{post.post_body}</span>
-          <img className="postImg" src={post.image_uri} alt="" />
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">

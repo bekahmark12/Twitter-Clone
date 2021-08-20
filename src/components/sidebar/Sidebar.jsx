@@ -12,8 +12,47 @@ import {
 } from "@material-ui/icons";
 import { Users } from "../../dummyData";
 import CloseFriend from "../closeFriend/CloseFriend";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+
 
 export default function Sidebar() {
+
+  const [friends, setFriends] = useState(null);
+    let token = localStorage.getItem('token');
+  
+    const getFollowing = async () => {
+      try {
+        const following = await axios.get(
+          "http://localhost:8080/api/users/bekah",
+          { headers: { "Authorization": token }})
+          .then(response => {
+            console.log(response.data)
+            setFriends(response.data)
+          }).catch(err => {
+            console.log(err.data)
+          });
+      } catch (err) {
+        if (err.response) {
+          return err.response.data;
+        }
+        console.log(err.response)
+        return { error: "Unexpected Error getting following"};
+      }
+    }
+
+    useEffect(() => {
+      let mounted = true;
+      if (mounted) {
+        getFollowing();
+      }
+      return () => mounted = false;
+    }, [])
+
+    if (!friends) {
+      return <h2>Loading Friends...</h2>
+    }
+
   return (
     <div className="sidebar">
       <div className="sidebarWrapper">
@@ -58,7 +97,8 @@ export default function Sidebar() {
         <button className="sidebarButton">Show More</button>
         <hr className="sidebarHr" />
         <ul className="sidebarFriendList">
-          {Users.map((u) => (
+          <h5>Close Friends:</h5>
+          {friends.map((u) => (
             <CloseFriend key={u.id} user={u} />
           ))}
         </ul>

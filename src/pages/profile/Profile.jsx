@@ -29,6 +29,19 @@ export default function Profile() {
       return { error: "Unexpected Error getting logged in user"};
     }
   }
+
+  useEffect(() => {
+    let mounted = true;
+    if (mounted) {
+        getUser();
+    }
+    return () => mounted = false;
+  }, [])
+  
+  if(!user){
+    return <h1>Loading User...</h1>
+  }
+
   return (
     <>
       <Topbar />
@@ -39,13 +52,13 @@ export default function Profile() {
             <div className="profileCover">
               <img
                 className="profileCoverImg"
-                src="assets/post/3.jpeg"
-                alt=""
+                src={user.cover_uri}
+                alt="cover uri"
               />
               <img
                 className="profileUserImg"
-                src="assets/person/7.jpeg"
-                alt=""
+                src={user.profile_uri}
+                alt="profile uri"
               />
             </div>
             <div className="profileInfo">
