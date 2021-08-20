@@ -28,7 +28,8 @@ const Login = () => {
       const resp = await UserClient.getBearerToken({ username, password });
       console.log('resp', resp)
       if (resp.hasOwnProperty('token')) {
-        localStorage.setItem('token', `Bearer ${resp.token}`)
+        localStorage.setItem('token', `Bearer ${resp.token}`);
+        localStorage.setItem('loggedIn', true);
         history.push('/')
       }
       const user = await UserClient.getUser();

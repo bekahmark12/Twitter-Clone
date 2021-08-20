@@ -7,12 +7,15 @@ import axios from "axios";
 
 
 const Feed = () => {
-  
+const [posts, setPosts] = useState(null);
+
+var token = localStorage.getItem('token')
+
 const getAllPosts = async () => {
   try {
       const posts = await axios.get(
           "http://localhost:8080/api/post/", 
-          { headers: {"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyVHlwZSI6MCwiVXNlcm5hbWUiOiJ0ZXN0IiwiZXhwIjoxNjI4ODE2NjE0LCJpc3MiOiJ1c2Vycy1zZXJ2aWNlIn0.dhnWNRHgdSuT0wkPGcR9ZyLkhpQAM5VCv7BujecJ4iE" }}
+          { headers: {"Authorization": token}}
           ).then(response => {
             console.log(response.data)
             setPosts(response.data)
@@ -27,7 +30,7 @@ const getAllPosts = async () => {
   }
 }
 
-  const [posts, setPosts] = useState(null);
+  
 
   useEffect(() => {
     let mounted = true;

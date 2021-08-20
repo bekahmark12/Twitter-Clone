@@ -4,6 +4,13 @@ import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { BrowserRouter as Router, NavLink, Link, Redirect, Switch } from "react-router-dom";
 
 export default function Topbar() {
+  // const setHomeRoute = () => {
+  //   if(localStorage.getItem('loggedIn')) {
+  //     return '/home'
+  //   }
+  //   return '/login'
+  // }
+
   return (
    
     <div className="topbarContainer">
@@ -22,8 +29,9 @@ export default function Topbar() {
       <div className="topbarRight">
 
         <div className="topbarLinks">
-          <a href='/login' className='topbarLink'>Login</a>
-          <a href='/home' className='topbarLink'>Home</a>
+          <a href='/login'  className='topbarLink'>Login</a>
+          <a href={localStorage.getItem('loggedIn') ? '/home' : '/login'} className='topbarLink'>Home</a>
+          <a href={localStorage.getItem('loggedIn') ? '/feed' : '/login'} className='topbarLink'>Feed</a>
         </div>
 
         <div className="topbarIcons">

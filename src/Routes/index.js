@@ -7,7 +7,7 @@ import {
 
 import Home from "../pages/home/Home";
 import Login from "../pages/login/Login";
-import Profile from "../pages/profile/Profile"
+import Profile from "../pages/profile/Profile";
 
 const Routes = () => {
   return (
@@ -16,6 +16,7 @@ const Routes = () => {
           <Route exact path="/" component={Profile}/>
           <Route path="/home" component={Home} />
           <Route path="/login" component={Login}/>
+          <Route path="/feed" component={Profile}/>
         </Switch>
     </Router>
   );
