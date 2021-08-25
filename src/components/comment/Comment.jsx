@@ -1,10 +1,10 @@
-import "./post.css";
+import "./Comment.css";
 import { MoreVert } from "@material-ui/icons";
 import { Users } from "../../dummyData";
 import { useState } from "react";
 import axios from "axios";
 
-export default function PostNoImage({ post }) {
+export default function Comment({ post }) {
 
   const likeHandler = async(e) => {
     e.preventDefault();
@@ -36,23 +36,11 @@ export default function PostNoImage({ post }) {
             <span className="postUsername">
               {post.author}
             </span>
+            <span className="postText">{post.post_body}</span>
             <span className="postDate">{post.date}</span>
           </div>
           <div className="postTopRight">
             <MoreVert />
-          </div>
-        </div>
-        <div className="postCenter">
-          <span className="postText">{post.post_body}</span>
-        </div>
-        <div className="postBottom">
-          <div className="postBottomLeft">
-            <img className="likeIcon" src="assets/like.png" onClick={likeHandler} alt="" />
-            <img className="likeIcon" src="assets/heart.png" onClick={likeHandler} alt="" />
-            <span className="postLikeCounter">{post.num_likes} people like it</span>
-          </div>
-          <div className="postBottomRight">
-            <span className="postCommentText">{post.comment} comments</span>
           </div>
         </div>
       </div>

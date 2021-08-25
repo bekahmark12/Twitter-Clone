@@ -15,10 +15,9 @@ var token = localStorage.getItem('token')
 const getAllPosts = async () => {
   try {
       const posts = await axios.get(
-          "http://localhost:8080/api/post/", 
+          "http://localhost:8080/api/post/feed", 
           { headers: {"Authorization": token}}
           ).then(response => {
-            console.log(response.data)
             setPosts(response.data)
           }).catch(err => {
             console.log(err.data)
@@ -42,7 +41,7 @@ const getAllPosts = async () => {
   }, [])
   
   if(!posts){
-    return <h1>Loading...</h1>
+    return <h1>Loading Posts...</h1>
   }
 
   console.log(posts);

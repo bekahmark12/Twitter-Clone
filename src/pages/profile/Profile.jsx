@@ -16,7 +16,6 @@ export default function Profile() {
         "http://localhost:8080/api/users/",
         { headers: { "Authorization": token }})
         .then(response => {
-          console.log(response.data)
           setUser(response.data)
         }).catch(err => {
           console.log(err.data)
@@ -62,12 +61,12 @@ export default function Profile() {
               />
             </div>
             <div className="profileInfo">
-                <h4 className="profileInfoName">Safak Kocaoglu</h4>
-                <span className="profileInfoDesc">Hello my friends!</span>
+                <h4 className="profileInfoName">{user.name}</h4>
+                <span className="profileInfoDesc">Hey friends!</span>
             </div>
           </div>
           <div className="profileRightBottom">
-            <Feed />
+            <Feed/>
             <Rightbar profile/>
           </div>
         </div>

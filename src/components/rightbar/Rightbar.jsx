@@ -18,7 +18,6 @@ export default function Rightbar({ profile }) {
           "http://localhost:8080/api/users/bekah",
           { headers: { "Authorization": token }})
           .then(response => {
-            console.log(response.data)
             setFriends(response.data)
           }).catch(err => {
             console.log(err.data)
@@ -43,7 +42,7 @@ export default function Rightbar({ profile }) {
     if (!friends) {
       return <h2>Loading Friends...</h2>
     }
-    
+
     return (
       <>
         <div className="birthdayContainer">
