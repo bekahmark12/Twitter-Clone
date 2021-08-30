@@ -7,8 +7,8 @@ import React, {useState, useEffect} from 'react'
 export default function Share() {
   const [user, setUser] = useState(null);
   const [showImageInput, setShowImageInput] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [postBody, setPostBody] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [postBody, setPostBody] = useState("");
   let token = localStorage.getItem('token');
 
   const submitHandler = async(e) => {
@@ -100,7 +100,7 @@ export default function Share() {
             <button className="shareButton" type="submit">Share</button>
         </div>
         <div className={showImageInput ? "showImageInput" : "hideImageInput"} id="imageURLInput">
-          <TextField value={imageUrl} id="standard-basic" label="Image URL:" onChange={(e) => setImageUrl(e.target.value)} />
+          <TextField value={imageUrl || ""} id="standard-basic" label="Image URL:" onChange={(e) => setImageUrl(e.target.value)} />
         </div>
       </div>
     </div>

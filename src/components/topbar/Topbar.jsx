@@ -2,46 +2,74 @@ import "./topbar.css";
 import React, { useEffect, useState } from 'react';
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import axios from "axios";
+import NotificationDD from '../notificationMenu/NotificationDropDn'
+
+/// @ts-ignore
+const io = require('socket.io-client')
 
 
-export default function Topbar() {
+
+export default function Topbar({ user: _user }) {
+
   const [user, setUser] = useState(null);
   let token = localStorage.getItem('token');
+  const [socket, setSocket] = useState(null);
+  const [notificationsCount, setNotificationsCount] = useState(0)
+  const [notificationList, setNotificationList] = useState([]);
 
-  const getUser = async () => {
-    try {
-      const user = await axios.get(
-        "http://localhost:8080/api/users/",
-        { headers: { "Authorization": token }})
-        .then(response => {
-          console.log(response.data)
-          setUser(response.data)
-        }).catch(err => {
-          console.log(err.data)
-        });
-    } catch (err) {
-      if (err.response) {
-        return err.response.data;
-      }
-      console.log(err.response)
-      return { error: "Unexpected Error getting logged in user"};
-    }
+  if (notificationList == null || notificationsCount == 0) {
+    localStorage.setItem('notifications', false)
   }
 
+  const lsLoggedIn = localStorage.getItem('loggedIn')
+
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-        getUser();
+    setUser(_user);
+  }, [_user])
+
+  useEffect(() => {
+    if (!lsLoggedIn) {
+      return;
+    } else {
+      const newSocket = io("http://localhost:8080", { path: '/api/notifications/socket.io' })
+      setSocket(newSocket);
+
+      console.log('you are in the socket useEffect')
+
+      return () => newSocket.close();
     }
-    return () => mounted = false;
-  }, [])
-  
-  if(!user){
+  }, [setSocket, lsLoggedIn]);
+
+
+  if (socket) {
+    socket.on("connect", () => {
+      console.log("socket connected")
+    })
+
+    socket.on('authorization', (msg) => {
+      console.log("socket auth", msg)
+      socket.emit('request', localStorage.getItem('token'))
+    }
+    )
+
+    socket.on('notification', (msg) => {
+      console.log('you hit the socket.on!', msg)
+      setNotificationList([...notificationList, msg])
+      setNotificationsCount(notificationsCount + 1)
+    });
+
+    socket.on("disconnect", () => {
+      console.log("socket disconnected")
+    })
+  }
+
+
+  if (!user) {
     return <h1>Loading User...</h1>
   }
 
   return (
-   
+
     <div className="topbarContainer">
       <div className="topbarLeft">
         <span className="logo">NEUMONT NETWORK</span>
@@ -58,15 +86,19 @@ export default function Topbar() {
       <div className="topbarRight">
 
         <div className="topbarLinks">
-          <a href='/login'  className='topbarLink'>Login</a>
+          <a href='/login' className='topbarLink'>Login</a>
           <a href={localStorage.getItem('loggedIn') ? '/home' : '/login'} className='topbarLink'>Home</a>
           <a href={localStorage.getItem('loggedIn') ? '/feed' : '/login'} className='topbarLink'>Feed</a>
         </div>
 
+
+
         <div className="topbarIcons">
           <div className="topbarIconItem">
-            <Person />
-            <span className="topbarIconBadge">1</span>
+            <NotificationDD notificationList={notificationList} />
+            <span className="topbarIconBadge">{notificationsCount}</span>
+            {/* // onClick=toggle a flag: open (setState) */}
+
           </div>
           <div className="topbarIconItem">
             <Chat />
@@ -77,9 +109,13 @@ export default function Topbar() {
             <span className="topbarIconBadge">1</span>
           </div>
         </div>
-        <img src={user.profile_uri} alt="" className="topbarImg"/>
+        <a href='user-info'>
+          <img src={localStorage.getItem('loggedIn') ?
+            user.profile_uri : 'https://image.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600w-1095249842.jpg'}
+            alt="" className="topbarImg" />
+        </a>
       </div>
     </div>
-    
+
   );
 }

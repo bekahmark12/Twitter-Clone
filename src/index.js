@@ -6,8 +6,8 @@ import Routes from './Routes/index'
 
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Routes/>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 );

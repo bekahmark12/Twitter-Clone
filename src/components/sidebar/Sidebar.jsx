@@ -16,42 +16,46 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 
-export default function Sidebar() {
-
+export default function Sidebar({user: _user }) {
+  const [user, setUser] = useState(null);
   const [friends, setFriends] = useState(null);
-    let token = localStorage.getItem('token');
-  
-    const getFollowing = async () => {
-      try {
-        const following = await axios.get(
-          "http://localhost:8080/api/users/bekah",
-          { headers: { "Authorization": token }})
-          .then(response => {
-            console.log(response.data)
-            setFriends(response.data)
-          }).catch(err => {
-            console.log(err.data)
-          });
-      } catch (err) {
-        if (err.response) {
-          return err.response.data;
-        }
-        console.log(err.response)
-        return { error: "Unexpected Error getting following"};
-      }
-    }
+  useEffect(() => {
+    setUser(_user);
+  }, [_user])
 
-    useEffect(() => {
-      let mounted = true;
-      if (mounted) {
-        getFollowing();
-      }
-      return () => mounted = false;
-    }, [])
+  let token = localStorage.getItem('token');
 
-    if (!friends) {
-      return <h2>Loading Friends...</h2>
+  const getFollowing = async () => {
+    try {
+      const following = await axios.get(
+        `http://localhost:8080/api/users/${user.name}`,
+        { headers: { "Authorization": token } })
+        .then(response => {
+          console.log(response.data)
+          setFriends(response.data)
+        }).catch(err => {
+          console.log(err.data)
+        });
+    } catch (err) {
+      if (err.response) {
+        return err.response.data;
+      }
+      console.log(err.response)
+      return { error: "Unexpected Error getting following" };
     }
+  }
+
+  useEffect(() => {
+    let mounted = true;
+    if (mounted) {
+      getFollowing();
+    }
+    return () => mounted = false;
+  }, [])
+
+  if (!friends) {
+    return <h2>Loading Friends...</h2>
+  }
 
   return (
     <div className="sidebar">

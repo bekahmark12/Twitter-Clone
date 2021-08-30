@@ -5,47 +5,37 @@ import Feed from "../../components/feed/Feed";
 import Rightbar from "../../components/rightbar/Rightbar";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import UserClient from "../../APIClients/UserClient"
 
-export default function Profile() {
-  const [user, setUser] = useState(null);
+export default function Profile({user: _user}) {
+  const [user, setUser] = useState(_user ? _user : null);
   let token = localStorage.getItem('token');
-
-  const getUser = async () => {
-    try {
-      const user = await axios.get(
-        "http://localhost:8080/api/users/",
-        { headers: { "Authorization": token }})
-        .then(response => {
-          setUser(response.data)
-        }).catch(err => {
-          console.log(err.data)
-        });
-    } catch (err) {
-      if (err.response) {
-        return err.response.data;
-      }
-      console.log(err.response)
-      return { error: "Unexpected Error getting logged in user"};
-    }
-  }
 
   useEffect(() => {
     let mounted = true;
-    if (mounted) {
-        getUser();
+    if (mounted && !user) {
+      UserClient.getUser((user, error) => {
+        if(error) {
+          console.log(error);
+        } else {
+          setUser(user);
+        }
+      });
     }
     return () => mounted = false;
   }, [])
-  
-  if(!user){
+
+  console.log(user)
+
+  if (!user) {
     return <h1>Loading User...</h1>
   }
 
   return (
     <>
-      <Topbar />
+      <Topbar user={user}/>
       <div className="profile">
-        <Sidebar />
+
         <div className="profileRight">
           <div className="profileRightTop">
             <div className="profileCover">
@@ -61,14 +51,19 @@ export default function Profile() {
               />
             </div>
             <div className="profileInfo">
-                <h4 className="profileInfoName">{user.name}</h4>
-                <span className="profileInfoDesc">Hey friends!</span>
+              <h4 className="profileInfoName">{user.name}</h4>
+              <span className="profileInfoDesc">Hey friends!</span>
             </div>
           </div>
-          <div className="profileRightBottom">
-            <Feed/>
-            <Rightbar profile/>
+          <div className="feedWrapper">
+            <>
+            <div className="profileRightBottom">
+              <Feed user={user}/>
+              <Rightbar profile user={user} />
+            </div>
+            </>
           </div>
+
         </div>
       </div>
     </>

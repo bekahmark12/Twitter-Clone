@@ -24,7 +24,7 @@ export default function Comment({ post }) {
   }
 
   return (
-    <div className="post">
+    <div className="comment">
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">

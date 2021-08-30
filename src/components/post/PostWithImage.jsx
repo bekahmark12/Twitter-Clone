@@ -1,26 +1,50 @@
 import "./post.css";
 import { MoreVert } from "@material-ui/icons";
-import { TextField, ClickAwayListener } from "@material-ui/core";
+import { TextField, IconButton } from "@material-ui/core";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Users } from "../../dummyData";
 import { useState } from "react";
 import axios from "axios";
+import Comment from "../comment/Comment"
+import AddBoxIcon from '@material-ui/icons/AddBox';
 
 export default function PostWithIMage({ post }) {
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [postBody, setPostBody] = useState(null);
 
-  const handleClickAway= () => {
+  const handleClickAway = () => {
     setShowCommentInput(false);
   }
 
-  const likeHandler = async(e) => {
+  const commentSubmitHandler = async(e) => {
+    e.preventDefault();
+    try{
+      const result = await axios.post(
+        `http://localhost:8080/api/post/${post.ID}`,
+        JSON.stringify(
+          {
+            "post_body": postBody,
+          }
+        ), {headers: {"Content-Type": "application/json", "Authorization": localStorage.getItem("token") }});
+        setShowCommentInput(false);
+        return {succeeded: true, data: result.data}
+      } catch(err) {
+      if(err.response) {
+        return{succeeded: false, data: err.response}
+      }
+      return {succeeded: false, data: "error sending the post creation."}
+    }
+        
+  }
+
+  const likeHandler = async (e) => {
     e.preventDefault();
     console.log(post)
     try {
       const result = await axios.patch(
         `http://localhost:8080/api/post/${post.ID}/like`,
         null,
-        { headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") } });
+        { headers: { "Authorization": localStorage.getItem("token") } });
       return { succeeded: true, data: result.data }
     } catch (err) {
       if (err.response) {
@@ -29,18 +53,6 @@ export default function PostWithIMage({ post }) {
       return { succeeded: false, data: "error sending the patch like request." }
     }
   }
-
-  // useEffect((ref) => {
-  //   function handleClickOutside(event) {
-  //     if (ref.current && !ref.current.contains(event.target)) {
-  //       alert("You clicked outside of me!");
-  //     }
-  //   }
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   }
-  // }, [input])
 
 
   return (
@@ -78,14 +90,23 @@ export default function PostWithIMage({ post }) {
               <span>{post.comment} comment</span>
             </div>
             <div className={showCommentInput ? "commentInput" : "commentInputHidden"}>
-              {/* <ClickAwayListener onClickAway={handleClickAway}> */}
-                <TextField id="outlined-basic" label="Add a comment:" variant="outlined" />
-              {/* </ClickAwayListener> */}
+              <form onSubmit={commentSubmitHandler}>
+                <TextField id="outlined-basic" label="Add a comment:" variant="outlined"  onChange={(e) => setPostBody(e.target.value)} />
+                <IconButton type="submit">
+                  <AddBoxIcon style={{ fontSize: 38, padding: '5px' }} type="submit"/>
+                  </IconButton>
+              </form>
+
             </div>
           </div>
         </div>
         <div className="postBottom2">
-            <label>Comments:</label>
+          <label>Comments:</label>
+        </div>
+        <div className="postBottom2">
+          {post.comments.map((c) => (
+            <Comment key={c.ID} post={c} />
+          ))}
         </div>
       </div>
     </div>

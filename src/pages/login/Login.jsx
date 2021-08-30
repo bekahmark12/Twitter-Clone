@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Form, InputGroup, FormControl } from 'react-bootstrap'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './login.css'
-import Topbar from '../../components/topbar/Topbar'
+import TopbarNLI from '../../components/topbar/TopbarNotLoggedIn'
 import UserClient from '../../APIClients/UserClient'
 import Sidebar from "../../components/sidebar/Sidebar";
 import Rightbar from "../../components/rightbar/Rightbar";
@@ -16,6 +16,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const history = useHistory();
   const [showAlert, setShowAlert] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   
   function validateForm() {
     return username.length > 0 && password.length > 0;
@@ -26,22 +35,18 @@ const Login = () => {
     event.preventDefault();
     try {
       const resp = await UserClient.getBearerToken({ username, password });
-      console.log('resp', resp)
-      if (resp.hasOwnProperty('token')) {
-        localStorage.setItem('token', `Bearer ${resp.token}`);
+      console.log(resp)
+      if(resp.status != 200){
+        return setShowAlert(true);
+      }
+      console.log('resp', resp.data)
+      if (resp.data.hasOwnProperty('token')) {
+        localStorage.setItem('token', `Bearer ${resp.data.token}`);
         localStorage.setItem('loggedIn', true);
         history.push('/')
-      }
-      const user = await UserClient.getUser();
-      console.log('UserClient.getUser', user);
-      if (user.hasOwnProperty('user_type')) {
-        localStorage.setItem('userType', user.user_type);
-      } else {
-        console.log("Didn't receive a user type on authentication");
-        setShowAlert(true);
-      }
-      
+      }    
     } catch (err) {
+      setShowAlert(true);
       console.log('there was an error')
       console.error(err)
     }
@@ -49,7 +54,7 @@ const Login = () => {
 
   return (
     <>
-      <Topbar />
+      <TopbarNLI />
       <form className="form" onSubmit={handleSubmit}>
 
         <InputGroup className="mb-3" className="input" controlId="username">

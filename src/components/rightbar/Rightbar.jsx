@@ -6,16 +6,21 @@ import axios from "axios";
 
 
 
-export default function Rightbar({ profile }) {
+export default function Rightbar({ profile, user: _user }) {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    setUser(_user);
+  }, [_user])
 
-  const HomeRightbar = () => {
+  const HomeRightbar = ({user}) => {
+    
     const [friends, setFriends] = useState(null);
     let token = localStorage.getItem('token');
   
     const getFollowing = async () => {
       try {
         const following = await axios.get(
-          "http://localhost:8080/api/users/bekah",
+          `http://localhost:8080/api/users/${user.name}`,
           { headers: { "Authorization": token }})
           .then(response => {
             setFriends(response.data)
@@ -30,6 +35,8 @@ export default function Rightbar({ profile }) {
         return { error: "Unexpected Error getting following"};
       }
     }
+
+  
 
     useEffect(() => {
       let mounted = true;
@@ -55,24 +62,23 @@ export default function Rightbar({ profile }) {
         <h4 className="rightbarTitle">Online Friends</h4>
         <ul className="rightbarFriendList">
           {friends.map((f) => (
-            <Online key={f.id} user={f} />
+            <Online key={f.ID} user={f} />
           ))}
         </ul>
       </>
     );
   };
 
-  const ProfileRightbar = () => {
+  const ProfileRightbar = ({user}) => {
   const [friends, setFriends] = useState(null);
   let token = localStorage.getItem('token');
 
   const getFollowing = async () => {
     try {
       const following = await axios.get(
-        "http://localhost:8080/api/users/bekah",
+        `http://localhost:8080/api/users/${user.name}`,
         { headers: { "Authorization": token }})
         .then(response => {
-          console.log(response.data)
           setFriends(response.data)
         }).catch(err => {
           console.log(err.data)
@@ -103,8 +109,9 @@ export default function Rightbar({ profile }) {
       <h4 className="rightbarTitle">User friends</h4>
       <div className="rightbarFollowings">
         {friends.map((f) => (
-          <div className="rightbarFollowing" key={f.id}>
+          <div className="rightbarFollowing" key={f.ID}>
             <img
+              key={f.ID}
               src={f.profile_uri}
               alt="profile here"
               className="rightbarFollowingImg"
@@ -114,28 +121,14 @@ export default function Rightbar({ profile }) {
         ))}
       </div>
 
-        <h4 className="rightbarTitle">User information</h4>
-        <div className="rightbarInfo">
-          <div className="rightbarInfoItem">
-            <span className="rightbarInfoKey">City:</span>
-            <span className="rightbarInfoValue">New York</span>
-          </div>
-          <div className="rightbarInfoItem">
-            <span className="rightbarInfoKey">From:</span>
-            <span className="rightbarInfoValue">Madrid</span>
-          </div>
-          <div className="rightbarInfoItem">
-            <span className="rightbarInfoKey">Relationship:</span>
-            <span className="rightbarInfoValue">Single</span>
-          </div>
-        </div>
+     
       </>
     );
   };
   return (
     <div className="rightbar">
       <div className="rightbarWrapper">
-        {profile ? <ProfileRightbar /> : <HomeRightbar />}
+        {profile ? <ProfileRightbar user={user}/> : <HomeRightbar user={user}/>}
       </div>
     </div>
   );

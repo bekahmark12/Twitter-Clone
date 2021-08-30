@@ -9,32 +9,32 @@ class UserClient {
                 JSON.stringify(credentials),
                 { headers: { "Content-Type": "application/json"}});
                 console.log(credentials)
-            return token.data;
+            return token;
         } catch (err) {
             if (err.response) {
                 console.log(err.response)
-                return err.response.data;
+                return {error: err.response.data.error, status: err.response.status};
             }
             console.log(err.response)
-            return { error: "Unexpected Error" };
+            return { error: "Unexpected Error", status: 500 };
         }
     }
 
  
-    static async getUser() {
+    static async getUser(cb) {
         var token = localStorage.getItem('token')
         try {
             const user = await axios.get(
                 "http://localhost:8080/api/users/",
                 { headers: { "Content-Type": "application/json", "Authorization": token }});
-                return user.data;
+                if (user.data.hasOwnProperty('user_type')) {
+                    localStorage.setItem('userType', user.user_type);
+                  } else {
+                    console.log("Didn't receive a user type on authentication");
+                  }
+                return cb(user.data, null);
         } catch (err) {
-            if (err.response) {
-                console.log(err.response)
-                return err.response.data;
-            }
-            console.log(err.response)
-            return { error: "Unexpected Error getting user"};
+            return cb(null, err.response ? err.response.data : {error: "Unexpected error getting user"} );
         }
     }
 

@@ -1,4 +1,5 @@
 import React from "react";
+import Master from "./Master"
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,6 +10,7 @@ import Home from "../pages/home/Home";
 import Login from "../pages/login/Login";
 import Profile from "../pages/profile/Profile";
 import ProfileNotLoggedIn from "../pages/profile/ProfileNotLoggedIn";
+import UserInfo from "../pages/about/about"
 
 const Routes = () => {
   let loggedIn = localStorage.getItem('loggedIn')
@@ -16,9 +18,10 @@ const Routes = () => {
     <Router>
         <Switch>
           <Route exact path="/" component={loggedIn ? Profile : ProfileNotLoggedIn}/>
-          <Route path="/home" component={Home} />
+          <Master path="/home" component={Home} />
           <Route path="/login" component={Login}/>
-          <Route path="/feed" component={Profile}/>
+          <Master path="/feed" component={Profile}/>
+          <Master path='/user-info' component={UserInfo}/>
         </Switch>
     </Router>
   );

@@ -51,7 +51,7 @@ const getAllPosts = async () => {
         <Share />
         {posts.map((p) => (
           p.image_uri != null ? 
-          <PostImage key={p.id} post={p} /> : <PostNoImage key={p.id} post={p}/>
+          <PostImage key={p.ID} post={p} /> : <PostNoImage key={p.ID} post={p}/>
         ))}
       </div>
     </div>

@@ -59,12 +59,20 @@
   display: flex;
   align-items: right;
   justify-content: right;
+  flex-direction: column;
   padding-top: 15px;
 }
 
 .postBottomLeft{
     display: flex;
     align-items: center;   
+}
+
+.addIcon{
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
 }
 
 .likeIcon{
@@ -90,8 +98,10 @@
 
 .commentInput{
   display: block;
+  justify-content: center;
 }
 
+
 .commentInputHidden{
-  display: none;
+  display: hidden;
 }

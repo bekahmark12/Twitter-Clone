@@ -1,9 +1,12 @@
 .profile{
     display: flex;
+    justify-content: center;
 }
 
 .profileRight{
     flex: 9;
+    width: 100%;
+    justify-content: center;
 }
 
 .profileCover{
@@ -47,4 +50,14 @@
 
 .profileRightBottom{
     display: flex;
+    width: 100%;
+    justify-content: center;
+
+}
+
+.feedWrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: auto;
 }
