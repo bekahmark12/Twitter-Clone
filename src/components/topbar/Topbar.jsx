@@ -6,7 +6,7 @@ import NotificationDD from '../notificationMenu/NotificationDropDn'
 
 /// @ts-ignore
 const io = require('socket.io-client')
-
+const cron = require('node-cron')
 
 
 export default function Topbar({ user: _user }) {
@@ -51,6 +51,10 @@ export default function Topbar({ user: _user }) {
       socket.emit('request', localStorage.getItem('token'))
     }
     )
+
+    // cron.schedule(5, () => {
+    //   console.log('CRON TEST YO!')
+    // })
 
     socket.on('notification', (msg) => {
       console.log('you hit the socket.on!', msg)
